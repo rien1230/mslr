@@ -1,3 +1,3 @@
 package com.example.mslr.model;
-public enum Role{VOTER, EC}
 
+public enum Role{VOTER, EC}

@@ -1,13 +1,22 @@
 package com.example.mslr.model;
 
+import jakarta.persistence.*;
+
 import java.time.LocalDate;
 
+@Entity
+@Table(name="user_app")
 public class User {
+    //Primary key + Auto-generated.
+    @Id
+    @GeneratedValue
     private Long id;
+    @Column(unique = true)
     private String email;
     private String fullName;
     private LocalDate dob;
     private String passwordHash;
+    @Enumerated(EnumType.STRING)
     private Role role;
 
     public Long getId() {

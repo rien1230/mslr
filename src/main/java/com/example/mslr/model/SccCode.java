@@ -1,6 +1,12 @@
 package com.example.mslr.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+
+@Entity
 public class SccCode {
+    //Primary key + Auto-generated.
+    @Id
     private String code;
     private boolean used;
 
