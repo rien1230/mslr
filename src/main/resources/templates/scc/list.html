@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>SCC Codes</title>
+</head>
+<body>
+
+<h1>SCC Codes</h1>
+
+<p><a th:href="@{/scc-codes/new}">Create new code</a></p>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>Code</th>
+        <th>Used</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr th:each="c : ${codes}">
+        <td th:text="${c.code}"></td>
+        <td th:text="${c.used}"></td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

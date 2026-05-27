@@ -9,7 +9,7 @@ import java.time.LocalDate;
 public class User {
     //Primary key + Auto-generated.
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(unique = true)
     private String email;
@@ -18,51 +18,39 @@ public class User {
     private String passwordHash;
     @Enumerated(EnumType.STRING)
     private Role role;
-
     public Long getId() {
         return id;
     }
-
     public void setId(Long id) {
         this.id = id;
     }
-
     public String getEmail() {
         return email;
     }
-
     public void setEmail(String email) {
         this.email = email;
     }
-
     public String getFullName() {
         return fullName;
     }
-
     public void setFullName(String fullName) {
         this.fullName = fullName;
     }
-
     public LocalDate getDob() {
         return dob;
     }
-
     public void setDob(LocalDate dob) {
         this.dob = dob;
     }
-
     public String getPasswordHash() {
         return passwordHash;
     }
-
     public void setPasswordHash(String passwordHash) {
         this.passwordHash = passwordHash;
     }
-
     public Role getRole() {
         return role;
     }
-
     public void setRole(Role role) {
         this.role = role;
     }

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>My Votes</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .header h1 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            color: #666;
+        }
+
+        .nav {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .nav a {
+            padding: 8px 16px;
+            background: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .nav a:hover {
+            background: #45a049;
+        }
+
+        .nav a.dashboard {
+            background: #2196F3;
+        }
+
+        .nav a.dashboard:hover {
+            background: #0b7dda;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+        }
+
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        .badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .badge.open {
+            background: #e8f5e8;
+            color: #2e7d32;
+            border: 1px solid #c8e6c9;
+        }
+
+        .badge.closed {
+            background: #ffebee;
+            color: #c62828;
+            border: 1px solid #ffcdd2;
+        }
+
+        .choice {
+            padding: 6px 12px;
+            background: #f0f7ff;
+            border-radius: 4px;
+            border: 1px solid #bbdefb;
+            display: inline-block;
+        }
+
+        .timestamp {
+            font-size: 13px;
+            color: #666;
+            font-family: monospace;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #666;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .signout {
+            float: right;
+            margin-top: -40px;
+        }
+
+        .signout-btn {
+            padding: 8px 16px;
+            background: #f44336;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .signout-btn:hover {
+            background: #d32f2f;
+        }
+
+        /* Error/Success Messages */
+        .alert {
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .alert.success {
+            background: #e8f5e8;
+            border: 1px solid #c8e6c9;
+            color: #2e7d32;
+        }
+
+        .alert.error {
+            background: #ffebee;
+            border: 1px solid #ffcdd2;
+            color: #c62828;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>My Votes</h1>
+        <p>Your voting history</p>
+    </div>
+
+    <div class="nav">
+        <a th:href="@{/voter}" class="dashboard">← Back to Dashboard</a>
+    </div>
+
+    <form th:action="@{/logout}" method="post" class="signout">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+        <button type="submit" class="signout-btn">Sign Out</button>
+    </form>
+
+    <!-- Alert Messages -->
+    <div th:if="${success}" class="alert success" th:text="${success}"></div>
+    <div th:if="${error}" class="alert error" th:text="${error}"></div>
+
+    <div th:if="${#lists.isEmpty(votes)}" class="empty-state">
+        <h3>No votes yet</h3>
+        <p>You haven't voted in any referendum yet.</p>
+    </div>
+
+    <table th:unless="${#lists.isEmpty(votes)}">
+        <thead>
+        <tr>
+            <th>Referendum</th>
+            <th>Status</th>
+            <th>Your Choice</th>
+            <th>Voted At</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="v : ${votes}">
+            <td>
+                <a th:href="@{/voter/referendums/{id}(id=${v.referendum.id})}"
+                   th:text="${v.referendum.title}">
+                    Referendum
+                </a>
+            </td>
+            <td>
+                        <span th:if="${v.referendum.status.name() == 'OPEN'}"
+                              class="badge open">OPEN</span>
+                <span th:if="${v.referendum.status.name() != 'OPEN'}"
+                      class="badge closed">CLOSED</span>
+            </td>
+            <td>
+                <span class="choice" th:text="${v.option.text}">Yes</span>
+            </td>
+            <td>
+                <span class="timestamp" th:text="${v.castAt}">2026-01-12T12:00</span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

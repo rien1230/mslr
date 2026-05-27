@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voter Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .header h1 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            color: #666;
+        }
+
+        .nav {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .nav a {
+            padding: 8px 16px;
+            background: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .nav a:hover {
+            background: #45a049;
+        }
+
+        .nav a.my-votes {
+            background: #2196F3;
+        }
+
+        .nav a.my-votes:hover {
+            background: #0b7dda;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 6px;
+            border: 1px solid #eee;
+        }
+
+        .section h2 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: #333;
+            font-size: 18px;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 10px;
+            padding: 12px 15px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        li:hover {
+            border-color: #4CAF50;
+            background: #f9fff9;
+        }
+
+        a {
+            color: #2196F3;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .status {
+            float: right;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status.open {
+            background: #e8f5e8;
+            color: #2e7d32;
+            border: 1px solid #c8e6c9;
+        }
+
+        .status.closed {
+            background: #ffebee;
+            color: #c62828;
+            border: 1px solid #ffcdd2;
+        }
+
+        .signout {
+            float: right;
+            margin-top: -40px;
+        }
+
+        .signout-btn {
+            padding: 8px 16px;
+            background: #f44336;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .signout-btn:hover {
+            background: #d32f2f;
+        }
+
+        /* Error/Success Messages */
+        .alert {
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .alert.success {
+            background: #e8f5e8;
+            border: 1px solid #c8e6c9;
+            color: #2e7d32;
+        }
+
+        .alert.error {
+            background: #ffebee;
+            border: 1px solid #ffcdd2;
+            color: #c62828;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>Voter Dashboard</h1>
+        <p>View and vote on referendums</p>
+    </div>
+
+    <div class="nav">
+        <a th:href="@{/voter/my-votes}" class="my-votes">My Votes →</a>
+    </div>
+
+    <form th:action="@{/logout}" method="post" class="signout">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+        <button type="submit" class="signout-btn">Sign Out</button>
+    </form>
+
+    <!-- Alert Messages -->
+    <div th:if="${success}" class="alert success" th:text="${success}"></div>
+    <div th:if="${error}" class="alert error" th:text="${error}"></div>
+
+    <div class="section">
+        <h2>Active Referendums (OPEN)</h2>
+        <div th:if="${#lists.isEmpty(activeRefs)}">
+            <p>No active referendums.</p>
+        </div>
+        <ul th:unless="${#lists.isEmpty(activeRefs)}">
+            <li th:each="r : ${activeRefs}">
+                <a th:href="@{/voter/referendums/{id}(id=${r.id})}"
+                   th:text="${r.title}">Referendum Title</a>
+                <span class="status open">OPEN</span>
+            </li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>All Referendums</h2>
+        <div th:if="${#lists.isEmpty(allRefs)}">
+            <p>No referendums available.</p>
+        </div>
+        <ul th:unless="${#lists.isEmpty(allRefs)}">
+            <li th:each="r : ${allRefs}">
+                <a th:href="@{/voter/referendums/{id}(id=${r.id})}"
+                   th:text="${r.title}">Referendum Title</a>
+                <span th:if="${r.status.name() == 'OPEN'}" class="status open">OPEN</span>
+                <span th:if="${r.status.name() != 'OPEN'}" class="status closed">CLOSED</span>
+            </li>
+        </ul>
+    </div>
+</div>
+</body>
+</html>
